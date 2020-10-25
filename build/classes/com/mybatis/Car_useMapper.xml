@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.Car_useDao">
+ 	
+ 	<insert id="addCar_use" parameterType="Car_use" >
+ 		insert into car_use(cid,eid,operator_id,cu_date)values
+ 		(#{cid},#{eid},#{operator_id},#{cu_date})
+ 	</insert>
+ 	
+ 	<select id="queryCar_useByCidCu_date" resultType="Car_use">
+ 		select * from car_use where cid=#{cid} and cu_date=#{cu_date}
+ 	</select>
+ 	
+ 	<select id="queryAllCar_use" resultType="Car_use">
+ 		select * from car_use order by cu_date DESC
+ 	</select>
+ 	
+ 	<select id="queryCar_useById" parameterType="Integer" resultType="Car_use">
+ 		select * from car_use where id=#{id}
+ 	</select>
+ 	
+ 	<delete id="deleteCar_use" parameterType="Integer">
+ 		delete from car_use where id=#{id}
+ 	</delete>
+ 	
+ 	<select id="searchCar_use" resultType="Car_use">
+ 		select * from car_use where ${property} like '%${keyword}%'
+ 	</select>
+ 
+ 	
+ </mapper>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+	
+	<!-- 扫描 -->
+	<context:component-scan base-package="com.controller,com.dao,com.service"></context:component-scan>
+    
+    
+	<!-- 配置视图解析器InternalResourceViewResolver -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<!--前缀 --> 
+		<property name="prefix" value="/views/"></property>
+		
+		<!-- 后缀 -->
+		<property name="suffix" value=".jsp"></property>	
+	</bean>
+	
+	<!-- 配置全局异常处理 -->
+	<bean class="com.Exception.MyExecption"></bean>
+	
+	<!-- springmvc基础配置 标配 -->
+	<mvc:annotation-driven>
+		<!--json格式乱码处理-->
+		<mvc:message-converters register-defaults="true">
+	    	<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+	        	<constructor-arg value="UTF-8"/>
+	    	</bean>
+	    	<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+	        	<property name="objectMapper">
+	            	<bean class="org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean">
+	                	<property name="failOnEmptyBeans" value="false"/>
+	            	</bean>
+	        	</property>
+	    	</bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+	
+	<!-- 开启AOP 
+	<aop:aspectj-autoproxy />
+	-->
+	
+	<!-- shiro使用注解的配置-->
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+	<!-- ⾃动代理⽣成器，等价于aop:config;
+	aop:config 或 AutoProxyCreator两者选其⼀，spring官⽅提醒千万不要同时使⽤。
+	
+	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor"/>-->
+	
+	<aop:config></aop:config>
+	<!-- 在 此 bean 的 构 建 过 程 中 ， 初 始 化 了 ⼀ 些 额 外 功 能 和 piontcut interceptors.add(new RoleAnnotationMethodInterceptor(resolver));
+	interceptors.add(new PermissionAnnotationMethodInterceptor(resolver)); 
+	interceptors.add(new AuthenticatedAnnotationMethodInterceptor(resolver)); 
+	interceptors.add(new UserAnnotationMethodInterceptor(resolver)); 
+	interceptors.add(new GuestAnnotationMethodInterceptor(resolver));-->
+	
+	<bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+	    <property name="securityManager" ref="securityManager"/>
+	</bean>
+
+	<!--配置静态资源访问映射-->
+    <mvc:default-servlet-handler/>
+    <mvc:resources location="/js/"  mapping="/js/**"/>
+    <mvc:resources location="/css/" mapping="/css/**" />
+    <mvc:resources location="/img/" mapping="/img/**" />
+    <mvc:resources location="/plugins/" mapping="/plugins/**"/>
+    <mvc:resources location="/photos/" mapping="/photos/**"/>
+    
+    <!-- 配置文件上传 -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver" 
+	    p:defaultEncoding="UTF-8"
+	    p:maxUploadSize="5400000"
+	    p:uploadTempDir="fileUpload/temp">
+    </bean>
+   
+</beans>

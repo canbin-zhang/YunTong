@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.DisburseDao">
+ 	<select id="queryAllDisburse" resultType="Disburse">
+ 		select * from disburse order by disburse_date desc
+ 	</select>
+	
+	<insert id="addDisburse" parameterType="Disburse"> 
+		insert into disburse(eid,operator_id,disburse_date,disburse_money,disburse_detail)values
+		(#{eid},#{operator_id},#{disburse_date},#{disburse_money},#{disburse_detail})
+	</insert>
+	
+	<select id="queryDisburseById" parameterType="Integer" resultType="Disburse">
+		select * from disburse where id=#{id}
+	</select>
+	
+	<delete id="deleteDisburse" parameterType="Integer">
+		delete from disburse where id=#{id}
+	</delete>
+	
+	<select id="disburseSearch" parameterType="String" resultType="Disburse">
+		select * from disburse where ${property} like '%${keyword}%' order by disburse_date desc
+	</select>
+	
+ </mapper>

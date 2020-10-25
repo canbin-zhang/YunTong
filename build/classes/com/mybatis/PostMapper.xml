@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.PostDao">
+
+	<select id="queryAllPost"  resultMap="employeeAndPost" >
+		select * from post
+	</select>
+	
+	<resultMap type="Post" id="employeeAndPost">
+		<id     property="pid" column="pid"/>
+		<result property="pname" column="pname"/>
+		<result property="salary" column="salary"/>
+		<collection property="employeelist" ofType="Employee" column="pid" select="com.dao.EmployeeDao.queryEmployeeByPid"/>
+	</resultMap>
+  
+	  <select id="queryPostByPid" parameterType="String" resultMap="employeeAndPost">
+	  	select * from post where pid=#{pid}
+	  </select>
+	  
+	  <insert id="addPost" parameterType="Post">
+	  		insert into post(pname,salary)values(#{pname},#{salary})
+	  </insert>
+	  
+	  <update id="updatePostSalary" >
+		update post set salary=#{salary} where pid=#{pid}
+	  </update>
+	  
+ </mapper>

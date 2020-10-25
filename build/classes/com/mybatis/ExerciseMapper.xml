@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.ExerciseDao">  
+
+	<insert id="addExercise"  parameterType="Exercise" >
+		insert into exercise(sid,exer_lid,exer_subject,exer_date)
+		values
+		(#{sid},#{exer_lid},#{exer_subject},#{exer_date})
+	</insert>
+	
+	<update id="updateExercise" parameterType="Exercise">
+		update exercise 
+		set exer_subject=#{exer_subject},exer_date=#{exer_date}
+		where id=#{id}
+	</update>
+	
+	
+	<select id="queryExerciseById" parameterType="String" resultType="Exercise">
+		select * from Exercise where id=#{id}
+	</select>
+	
+
+	<select id="queryAllExercise" resultType="Exercise">
+		select * from exercise
+	</select>
+  
+    <select id="queryExerciseByEid" parameterType="String" resultType="Exercise">
+		select l.* from exercise l join studentlist s on l.sid=s.sid where eid=#{eid}
+  	</select>
+ </mapper>

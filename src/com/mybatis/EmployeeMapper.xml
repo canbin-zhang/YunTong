@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.EmployeeDao">  
+
+	<insert id="addEmployee"  parameterType="Employee" >
+		insert into employee(eid,epassword,ename,esex,ephone,email,ephoto,pid,status)
+		values
+		(#{eid},#{epassword},#{ename},#{esex},#{ephone},#{email},#{ephoto},#{pid},#{status})
+	</insert>
+	
+	<select id="queryEmployeeByEid" parameterType="String" resultType="Employee">
+		select * from Employee where eid=#{eid}
+	</select>
+	
+	<select id="queryPostByEid" parameterType="String" resultType="Post">
+		select p.*
+		from employee e
+		join post p on e.pid=p.pid
+		where e.eid=#{eid}
+	</select>
+	
+	<select id="queryEmployeeByEmail" parameterType="String" resultType="Employee">
+		select * from employee where email=#{email}
+	</select>
+	
+	<update id="resetPassword" parameterType="String" >
+		update employee
+		set epassword=#{password}
+		where email=#{email};
+	</update>
+
+	<select id="queryAllEmployee" resultType="Employee">
+		select * from employee
+	</select>
+	
+	<update id="deleteEmployeeByEid" parameterType="String">
+		update employee set status='离职' where eid=#{eid}
+	</update>
+	
+	<update id="updateEmployee" parameterType="Employee">
+		update employee 
+		set ename=#{ename},esex=#{esex},ephone=#{ephone},email=#{email},pid=#{pid},status=#{status}
+		where eid=#{eid}
+	</update>
+	
+	<select id="searchEmployee" parameterType="String" resultType="Employee">
+		select * from employee where ${property} like '%${keyword}%'
+	</select>
+	
+	<select id="queryEmployeeByPid" parameterType="String" resultType="Employee">
+		select * from employee where pid=#{pid}
+	</select>
+  
+   	<select id="queryEmployeeStatus" parameterType="String" resultType="String">
+   		select status from employee where eid=#{eid}
+   	</select>
+   	
+   	<select id="queryEnameByEid" parameterType="String" resultType="String">
+   		select ename from employee where eid=#{eid}
+   	</select>
+   	
+   	<select id="queryEmployeeByPostName" parameterType="String" resultType="Employee">
+		select e.*
+		from employee e
+		join post p on e.pid=p.pid
+		where p.pname=#{pname}	
+	</select>
+	
+	<update id="resetPasswordByEid" >
+		update employee set
+		epassword=#{password} where eid=#{eid}
+	</update>
+ </mapper>

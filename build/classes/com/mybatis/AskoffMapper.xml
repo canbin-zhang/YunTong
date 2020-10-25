@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.AskoffDao">
+
+	<insert id="addAskoff" parameterType="Askoff" >
+		insert into askoff(eid,start_date,end_date,reason,pass)values(#{eid},#{start_date},#{end_date},#{reason},#{pass});
+	</insert>
+	
+	<select id="askoffListByEid" parameterType="String" resultType="Askoff">
+		select * from askoff where eid=#{eid} order by start_date DESC
+	</select>
+	
+	<select id="queryaskoffById" parameterType="Integer" resultType="Askoff">
+		select * from askoff where id=#{id}
+	</select>
+	
+	<select id="operatorNameByEid" parameterType="String" resultType="String">
+		select ename from employee where eid=#{eid}
+	</select>
+	
+	<select id="askoffList" resultType="Askoff">
+		select * from askoff order by pass ASC,start_date DESC
+	</select>
+	
+	<update id="askoffPass" >
+		update askoff set 
+		pass=1,operator_id=#{operator_id}
+		where id=#{id}
+	</update>
+	
+	<select id="toAskoffStatus" resultType="Askoff">
+		select a.* 
+		from (select * from askoff where pass=1 and Date(now()) between start_date and end_date) as a 
+		join (select * from employee where status="在职") as e 
+		on a.eid=e.eid
+	</select>
+	
+	<select id="toAtPostStatus" resultType="Askoff">
+		select a.* 
+		from (select * from employee where status="请假") as e 
+		join (select * from askoff where Date(now()) not between start_date and end_date)as a 
+		on a.eid=e.eid
+	</select>
+	
+	<delete id="deleteAskoff" parameterType="Integer">
+		delete from askoff where id=#{id}
+	</delete>
+	
+	<select id="searchAskoff" resultType="Askoff">
+ 		select * from askoff where ${property} like '%${keyword}%'
+ 	</select>
+ </mapper>

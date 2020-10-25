@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.SalaryDao">
+
+	<select id="queryAllSalary" resultType="Salary">
+		select * from salary order by salary_month desc
+	</select>
+	<insert id="addSalary" parameterType="Salary">
+		insert into salary(eid,operator_id,salary_month,grant_date,salary_money)
+		values(#{eid},#{operator_id},#{salary_month},#{grant_date},#{salary_money})
+	</insert>
+	<select id="querySalaryById" parameterType="Integer" resultType="Salary">
+		select * from salary where id=#{id}
+	</select>
+	<delete id="deleteSalaryById" parameterType="Integer">
+		delete from salary where id=#{id}
+	</delete>
+	<select id="querySalaryByEid" parameterType="String" resultType="Salary">
+		select * from salary where eid=#{eid} order by salary_month DESC
+	</select>
+	<select id="salarySearch" resultType="Salary">
+		select * from salary where salary_month between #{start_date} and #{end_date}
+	</select>
+ </mapper>

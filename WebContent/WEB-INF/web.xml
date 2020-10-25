@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
+  <display-name>YunTong</display-name>
+  <welcome-file-list>
+    <welcome-file>views/login.html</welcome-file>
+    <welcome-file>views/login.htm</welcome-file>
+    <welcome-file>views/login.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+  
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath:applicationContext.xml</param-value>
+  </context-param>
+  
+  <listener>
+    <listener-class>
+  		org.springframework.web.context.ContextLoaderListener 
+  	</listener-class>
+  </listener>
+  
+  <!-- 配置监听器来获取访问的用户的ip -->
+  <listener>
+  	<listener-class>
+  		org.springframework.web.context.request.RequestContextListener
+  	</listener-class>
+  </listener>
+
+  <servlet>
+    <servlet-name>springDispatcherServlet</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>classpath:springmvc.xml</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>springDispatcherServlet</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+  
+  
+  <filter>
+    <filter-name>CharacterEncodingFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+    <init-param>
+      <param-name>forceRequestEncoding</param-name>
+      <param-value>true</param-value>
+    </init-param>
+    <init-param>
+      <param-name>forceResponseEncoding</param-name>
+      <param-value>true</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>CharacterEncodingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  
+ <!-- shiro所需要的过滤器 （在将shiro交给spring后，使用DelegatingFilterProxy）
+  <filter>
+  	<filter-name>shiroFilter</filter-name>
+  	<filter-class>org.apache.shiro.web.servlet.ShiroFilter</filter-class>
+  </filter>
+  <filter-mapping>
+  	<filter-name>shiroFilter</filter-name>
+  	<url-pattern>/*</url-pattern>
+  </filter-mapping>
+  -->
+  
+  
+  <!-- 用来加载shiro.ini文件，获取过滤器链等（将shiro交给spring后不需要了 -->
+  <!-- <listener>
+  	<listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>
+  </listener>
+  <context-param>
+  	<param-name>shiroConfigLocations</param-name>
+  	<param-value>classpath:shiro.ini</param-value>
+  </context-param>-->
+  
+	  <!-- 会从spring⼯⼚中获取和它同名的bean，（id="shiroFilter"）
+	接到请求后调⽤bean的doFilter⽅法，进⾏访问控制。
+	-->
+	
+	<filter>
+	    <filter-name>shiroFilter</filter-name>
+	    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	    <init-param>
+	        <param-name>targetFilterLifecycle</param-name>
+	        <param-value>true</param-value>
+	    </init-param>
+	</filter>
+	<filter-mapping>
+	    <filter-name>shiroFilter</filter-name>
+	    <url-pattern>/*</url-pattern>
+	    <!--  加上后面的 dispatcher就可以在web.xml中拦截ssm return后找不到视图和500的异常-->
+	   <dispatcher>REQUEST</dispatcher>
+	   <dispatcher>FORWARD</dispatcher>
+	   <dispatcher>INCLUDE</dispatcher>
+	   <dispatcher>ERROR</dispatcher>
+	</filter-mapping>
+	<!-- EnvironmentLoaderListener不再需要，因为shiro环境已由spring初始化
+	springMVC,spring配置不变 -->
+	<error-page>
+	   <error-code>404</error-code>
+	   <location>/views/404.jsp</location>
+	</error-page>
+
+	<error-page>
+	   <error-code>500</error-code>
+	   <location>/views/404.jsp</location>
+	</error-page>
+	<error-page>
+	   <error-code>400</error-code>
+	   <location>/views/400.jsp</location>
+	</error-page>
+	
+	<!-- 过滤器 转化提交方式 -->
+	<filter>
+	    <filter-name>hiddenHttpMethodFilter</filter-name>
+	    <filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+	</filter>
+	<filter-mapping>
+	    <filter-name>hiddenHttpMethodFilter</filter-name>
+	    <servlet-name>/*</servlet-name>
+	</filter-mapping>
+</web-app>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.EmployeelistDao">
+
+	<insert id="addEmploylist" parameterType="Employeelist">
+		insert into employeelist(operator_id,eid,em_date)values (#{operator_id},#{eid},#{em_date})
+	</insert>
+	
+	<select id="queryEmployeelistByEid" parameterType="String" resultType="Employeelist">
+		select * from employeelist where eid=#{eid}
+	</select>
+  
+  <select id="queryAllEmployeelist" resultType="Employeelist"> 
+  		select * from employeelist order by em_date DESC
+  </select>
+   
+  <select id="employeelistSearch" parameterType="String" resultType="Employeelist">
+  		select * from employeelist where ${property} like '%${keyword}%' order by em_date DESC
+  </select>
+  
+  <select id="employeelistSearchByName" parameterType="String" resultType="Employeelist"> 
+  		select b.*
+  		from employee a
+  		join employeelist b
+  		on  a.eid=b.operator_id
+  		where  a.ename like '%${keyword}%'
+  </select>
+ </mapper>

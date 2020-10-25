@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.DimissionDao">
+
+	<insert id="addDimission" parameterType="Dimission">
+		insert into dimission(operator_id,eid,dm_date,reason)values(#{operator_id},#{eid},#{dm_date},#{reason})
+	</insert>
+
+	
+	<select id="queryDimissionByEid" parameterType="String" resultType="Dimission">
+		select * from dimission where eid=#{eid}
+	</select>
+  
+  <select id="queryAllDimission" resultType="Dimission"> 
+  		select * from dimission order by dm_date DESC
+  </select>
+   
+  <select id="dimissionSearch" parameterType="String" resultType="Dimission">
+  		select * from dimission where ${property} like '%${keyword}%'
+  </select>
+  
+  <select id="dimissionSearchByName" parameterType="String" resultType="Dimission"> 
+  		select b.*
+  		from employee a
+  		join dimission b
+  		on  a.eid=b.operator_id
+  		where  a.ename like '%${keyword}%'
+  </select>
+ </mapper>
+ 

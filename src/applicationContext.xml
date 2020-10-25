@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd">
+
+	
+	<!-- 配置扫描注解的包 -->
+	<context:component-scan base-package="com.dao,com.controller,com.service,com.pojo"></context:component-scan>
+	
+	<!-- 启动基于注解的Aspectj支持 -->
+	<aop:aspectj-autoproxy />
+	
+	<!-- 配置数据源 -->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.cj.jdbc.Driver"></property>
+		<property name="url" value="jdbc:mysql://localhost:3306/yuntong?serverTimezone = GMT%2B8"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="root"></property>
+	</bean>
+	
+	<!--邮件配置-->
+	<context:property-placeholder location="classpath:mail.properties" ignore-unresolvable="true"/>
+	<!--配置邮件接口-->
+	<bean id="javaMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+     <property name="host" value="${mail.smtp.host}"/>
+     <property name="username" value="${mail.smtp.username}"/>
+     <property name="password" value="${mail.smtp.password}"/>
+     <property name="defaultEncoding" value="${mail.smtp.defaultEncoding}"/>
+     <property name="javaMailProperties">
+         <props>
+             <prop key="mail.smtp.auth">${mail.smtp.auth}</prop>
+             <prop key="mail.smtp.timeout">${mail.smtp.timeout}</prop>
+         </props>
+     </property>
+	</bean>
+	
+	<!--配置事务管理器  -->
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
+	<!-- 增加对事务的支持 (核心)为事务管理器注册注解驱动器-->
+	<tx:annotation-driven transaction-manager="txManager"/>
+	
+	
+	
+	<!-- 配置mybatis工厂bean (需要加载conf.xml)-->
+	<bean id="Sqlsessionfactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="configLocation" value="classpath:com/mybatis/mybatis-config.xml"></property>
+		
+		<!-- 配置分页PageHelper -->
+		<property name="plugins">
+		    <array>
+		      <bean class="com.github.pagehelper.PageInterceptor">
+		        <property name="properties">
+		          <!--使用下面的方式配置参数，一行配置一个 -->
+		          <value>reasonable=true</value>
+		        </property>
+		      </bean>
+		    </array>
+		 </property>
+	</bean>
+	
+	
+	<!-- 配置扫描@Mapper注解 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.dao"></property>
+		<property name="sqlSessionFactoryBeanName" value="Sqlsessionfactory"></property>
+	</bean>
+	
+	<!-- 扫描shiro的配置文件 -->
+	<import resource="classpath:shiro_applicationContext.xml"/>
+	<!-- 引入redis配置文件 -->
+    <import resource="classpath:redisContext.xml"/>
+	
+</beans>

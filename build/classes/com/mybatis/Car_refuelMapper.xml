@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.Car_refuelDao">
+ 	
+ 	<select id="queryAllCar_refuel" resultType="Car_refuel">
+ 		select * from car_refuel order by refuel_date desc
+ 	</select>
+ 	
+ 	<insert id="addCar_refuel" parameterType="Car_refuel">
+ 		insert into car_refuel(cid,operator_id,refuel_money,refuel_date)values
+ 		(#{cid},#{operator_id},#{refuel_money},#{refuel_date})
+ 	</insert>
+ 	
+ 	<select id="queryCar_refuelById" parameterType="Integer" resultType="Car_refuel">
+ 		select * from car_refuel where id=#{id}
+ 	</select>
+ 	
+ 	<delete id="deleteCar_refuel" parameterType="Integer">
+ 		delete from car_refuel where id=#{id}
+ 	</delete>
+ 	
+ 	<select id="searchCar_refuel" resultType="Car_refuel">
+ 		select * from car_refuel where ${property} like '%${keyword}%'
+ 	</select>
+ </mapper>

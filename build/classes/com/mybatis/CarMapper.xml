@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.CarDao">
+ 	<select id="queryAllCar" resultType="Car">
+ 		select * from car order by cdate desc
+ 	</select>
+ 	
+ 	<insert id="addCar" parameterType="Car">
+ 		insert into car(cid,cdate,cmoney,eid,status)values
+ 		(#{cid},#{cdate},#{cmoney},#{eid},#{status})
+ 	</insert>
+ 	
+ 	<select id="queryCarByCid" parameterType="String" resultType="Car">
+ 		select * from car where cid=#{cid}
+ 	</select>
+ 	
+ 	<select id="searchCar" resultType="Car">
+ 		select * from car where ${property} like '%${keyword}%'
+ 	</select>
+ 	
+ 	<update id="deleteCar" parameterType="String">
+ 		update car set status="报废" where cid=#{cid}
+ 	</update>
+ 	
+ 	<update id="updateCar" parameterType="Car">
+ 		update car set cdate=#{cdate},cmoney=#{cmoney},status=#{status} where cid=#{cid}
+ 	</update>
+ 	
+ 	<select id="queryCountCarByCid" parameterType="String" resultType="Integer">
+ 		select count(*) from car where cid=#{cid}
+ 	</select>
+ </mapper> 

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.StudentDao">  
+
+	<insert id="addStudent"  parameterType="Student" >
+		insert into student(sid,sname,ssex,sphone,sphoto,lid,subject)
+		values
+		(#{sid},#{sname},#{ssex},#{sphone},#{sphoto},#{lid},#{subject})
+	</insert>
+	
+	<select id="queryStudentBySid" parameterType="String" resultType="Student">
+		select * from Student where sid=#{sid}
+	</select>
+	
+	<select id="queryLicenseBySid" parameterType="String" resultType="License">
+		select l.*
+		from student s
+		join license l on s.lid=l.lid
+		where s.sid=#{sid}
+	</select>
+	
+
+	<select id="queryAllStudent" resultType="Student">
+		select s.* from student s join studentlist l on s.sid=l.sid order by l.sm_date DESC
+	</select>
+	
+	
+	<update id="updateStudent" parameterType="Student">
+		update student 
+		set sname=#{sname},ssex=#{ssex},sphone=#{sphone},subject=#{subject}
+		where sid=#{sid}
+	</update>
+	
+	<select id="searchStudent" parameterType="String" resultType="Student">
+		select * from student where ${property} like '%${keyword}%'
+	</select>
+	
+	<select id="searchStudentByEid"  resultType="Student">
+		select s.* from student s join studentlist l on s.sid=l.sid where s.${property} like '%${keyword}%' and l.eid=#{eid}
+	</select>
+	
+	<select id="queryStudentByLid" parameterType="String" resultType="Student">
+		select * from student where lid=#{lid}
+	</select>
+  	
+  		<select id="queryStudentlistByEid" parameterType="String" resultType="Student">
+		select s.* from student s join studentlist l on s.sid=l.sid where eid=#{eid} order by l.sm_date DESC
+  		</select>
+  		
+  		<select id="queryStudentBySphone" parameterType="String" resultType="Integer">
+  			select count(*) from student where sphone=#{sphone}
+  		</select>
+  		
+  	<update id="updateStudentSubject">
+  		update student set subject=#{exam_subject} where sid=#{sid}
+  	</update>
+ </mapper>

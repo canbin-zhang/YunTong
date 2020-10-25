@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.ExamDao">  
+
+	<insert id="addExam"  parameterType="Exam" >
+		insert into exam(sid,exam_lid,exam_subject,exam_date,pass)
+		values
+		(#{sid},#{exam_lid},#{exam_subject},#{exam_date},#{pass})
+	</insert>
+	
+	<update id="updateExam" parameterType="Exam">
+		update exam 
+		set sid=#{sid},exam_subject=#{exam_subject},pass=#{pass},exam_date=#{exam_date}
+		where id=#{id}
+	</update>
+	
+	
+	<select id="queryExamById" parameterType="String" resultType="Exam">
+		select * from Exam where id=#{id}
+	</select>
+	
+
+	<select id="queryAllExam" resultType="Exam">
+		select * from exam order by exam_date DESC
+	</select>
+  
+    <select id="queryExamByEid" parameterType="String" resultType="Exam">
+		select l.* from exam l join studentlist s on l.sid=s.sid where eid=#{eid} order by exam_date DESC
+  	</select>
+  	
+ </mapper>

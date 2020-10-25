@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.LicenseDao">
+
+	<select id="queryAllLicense"  resultMap="studentAndLicense" >
+		select * from license
+	</select>
+	
+	<resultMap type="License" id="studentAndLicense">
+		<id     property="lid" column="lid"/>
+		<result property="lname" column="lname"/>
+		<result property="lmoney" column="lmoney"/>
+		<collection property="studentlist" ofType="Student" column="lid" select="com.dao.StudentDao.queryStudentByLid"/>
+	</resultMap>
+  
+	  <select id="queryLicenseByLid" parameterType="String" resultMap="studentAndLicense">
+	  	select * from license where lid=#{lid}
+	  </select>
+	  
+	  <insert id="addLicense" parameterType="License">
+	  		insert into license(lid,lname,lmoney)values(#{lid},#{lname},#{lmoney})
+	  </insert>
+	  
+	  <update id="updateLicense" parameterType="License">
+	  		update license 
+	  		set lname=#{lname},lmoney=#{lmoney} where lid=#{lid}
+	  </update>
+ </mapper>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd">
+
+	
+	<!-- 整合mybaits，事务控制等 配置不变 -->
+	<!-- 添加配置 -->
+	<!-- shiro -->
+	<!-- 声明realm -->
+	<bean id="realm1" class="com.Realm.MyRealm">
+	    <property name="employeedao" ref="employeeDao"/>
+	    <!-- 此属性如果通过注解注⼊，则需要将注解加载set⽅法上，不能用在属性上。
+	此属性是⽗类属性，所以只有在set⽅法上注⼊，才能覆盖⽗类属性值。-->
+	
+	    <!--密码比对器，暂时没用到 <property name="credentialsMatcher">
+	        <bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+	            <property name="hashAlgorithmName" value="SHA-256"/>
+	            <property name="storedCredentialsHexEncoded" value="false"/>
+	            <property name="hashIterations" value="1000"/>
+	        </bean>
+	    </property>
+	    -->
+	    <property name="authorizationCachingEnabled" value="false"/>
+	</bean>
+	
+	<!-- 声明SecurityManager -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+	    <property name="realm" ref="realm1"/>
+	</bean>
+	
+	<!-- 登出后的跳转路径过滤器 -->
+	<bean id="logoutFilter" class="org.apache.shiro.web.filter.authc.LogoutFilter">
+     	<property name="redirectUrl" value="/" />
+	</bean>
+	
+	<!-- ⽣产SpringShiroFilter
+	（ 持有shiro的过滤相关规则，可进⾏请求的过滤校验，校验请求是否合法 ）
+	-->
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+	    <!-- 注入核心对象 -->
+	    <property name="securityManager" ref="securityManager"/>
+	    
+	    <!-- 未登录、没权限的跳转路径 -->
+	    <!-- 在使用shiro注解开发时，这里的处理无效，需要设置全局的异常处理 
+	    <property name="loginUrl" value="/"/>
+	    <property name="unauthorizedUrl" value="/login"/>-->
+	    
+	    <!-- 登出的配置 -->
+	    <property name="filters">
+		    <map>
+		        <entry key="logout" value-ref="logoutFilter" />
+		    </map>
+		</property>
+	    
+	    <!-- 过滤器链 -->
+	    <property name="filterChainDefinitions">
+	        <value>
+				/logout = logout
+	        </value>
+	    </property>
+	 </bean>
+</beans>

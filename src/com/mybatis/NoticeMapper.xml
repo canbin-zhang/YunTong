@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.NoticeDao">
+	
+	<select id="queryAllNotice" resultType="Notice" >
+		select * from notice
+	</select>
+	
+	<select id="queryNotice" parameterType="Integer" resultType="Notice">
+		select * from notice where id=#{id}
+	</select>
+	
+	<insert id="addNotice" parameterType="Notice" keyProperty="id" useGeneratedKeys="true">
+		insert into notice(date,detail,operator_id)
+		values(#{date},#{detail},#{operator_id})
+	</insert>
+	
+	<update id="updateNoticePhoto" >
+		update notice set nphoto=#{nphoto} where id=#{id}
+	</update>
+	
+	<delete id="deleteNotice" parameterType="Integer">
+		delete from notice where id=#{id}
+	</delete>
+	
+	<update id="updateNotice" parameterType="Notice">
+		update notice set date=#{date},detail=#{detail},operator_id=#{operator_id} where id=#{id}
+	</update>
+	
+ </mapper>
